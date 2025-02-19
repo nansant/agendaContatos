@@ -11,6 +11,28 @@ public class ContatoRepository {
 
 	private ConnectionFactory connectionFactory = new ConnectionFactory();
 
+	public void create(Contato contato) {
+
+		try {
+			
+			var connection = connectionFactory.getConnection();
+			var statement = connection.prepareStatement("INSERT INTO contatos(id, nome, telefone, email) VALUES(?,?,?,?)");
+			
+			statement.setObject(1, UUID.randomUUID());
+			statement.setString(2, contato.getNome());
+			statement.setString(3, contato.getTelefone());
+			statement.setString(4, contato.getEmail());
+	        statement.executeUpdate();
+
+	        statement.close();
+			connection.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 	public List<Contato> findAll() {
 		try {
 
@@ -33,6 +55,8 @@ public class ContatoRepository {
 				lista.add(contato);
 
 			}
+			
+			statement.close();
 			connection.close();
 			return lista;
 		} catch (Exception e) {
